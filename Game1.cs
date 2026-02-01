@@ -25,7 +25,7 @@ public class Game1 : Game
     private Vector2 _UfoPosition;
 
     private float _ufoSpeed = 200f;
-    private float _speed = 50f;
+    private float _astronautSpeed = 25f;
 
     private float deltaTime;
 
@@ -43,6 +43,8 @@ public class Game1 : Game
 
         _UfoPosition = new Vector2(400, 300);
         _UfoVelocity = new Vector2(1f, 1f);
+
+
 
         base.Initialize();
     }
@@ -69,7 +71,7 @@ public class Game1 : Game
 
         deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
     
-        _APosition += _AVelocity * _speed * deltaTime;
+        _APosition += _AVelocity * _astronautSpeed * deltaTime;
 
         HandleUfoMovement();
 
@@ -102,6 +104,9 @@ public class Game1 : Game
     {
         KeyboardState state = Keyboard.GetState();
 
+        int screenWidth = GraphicsDevice.Viewport.Width;
+        int screenHeight = GraphicsDevice.Viewport.Height;
+
         if (state.IsKeyDown(Keys.W))
         {
             _UfoPosition.Y -= _UfoVelocity.Y * _ufoSpeed * deltaTime;
@@ -123,6 +128,8 @@ public class Game1 : Game
 
         }
             
+        _UfoPosition.X = MathHelper.Clamp(_UfoPosition.X, 0, screenWidth - 220);
+        _UfoPosition.Y = MathHelper.Clamp(_UfoPosition.Y, -100, screenHeight - 260);
     }
 
 }
