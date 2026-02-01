@@ -17,10 +17,17 @@ public class Game1 : Game
     private SpriteFont _Arial;
 
     private SimpleAnimation _jupiterAnimation;
+    private SimpleAnimation _ufoAnimation;
 
-    private Vector2 _velocity;
-    private Vector2 _position;
+    private Vector2 _AVelocity;
+    private Vector2 _APosition;
+    private Vector2 _UfoVelocity;
+    private Vector2 _UfoPosition;
+
+    private float _ufoSpeed = 200f;
     private float _speed = 50f;
+
+    private float deltaTime;
 
     public Game1()
     {
@@ -31,8 +38,11 @@ public class Game1 : Game
 
     protected override void Initialize()
     {
-        _position = new Vector2(100, 100);
-        _velocity = new Vector2(-1f, -1f); 
+        _APosition = new Vector2(100, 100);
+        _AVelocity = new Vector2(-1f, -1f);
+
+        _UfoPosition = new Vector2(400, 300);
+        _UfoVelocity = new Vector2(1f, 1f);
 
         base.Initialize();
     }
@@ -48,17 +58,20 @@ public class Game1 : Game
         _Arial = Content.Load<SpriteFont>("File");
 
         _jupiterAnimation = new SimpleAnimation(Content.Load<Texture2D>("jupiter-128x128"), 128, 128, 6, 1);
+        _ufoAnimation = new SimpleAnimation(Content.Load<Texture2D>("UFO"), 240, 360, 8, 10);
 
     }
 
     protected override void Update(GameTime gameTime)
     {
         _jupiterAnimation.Update(gameTime);
+        _ufoAnimation.Update(gameTime);
 
-        float deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
-        _position += _velocity * _speed * deltaTime;
+        deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
+    
+        _APosition += _AVelocity * _speed * deltaTime;
 
-        
+        HandleUfoMovement();
 
         base.Update(gameTime);
     }
@@ -71,16 +84,45 @@ public class Game1 : Game
 
         _spriteBatch.Draw(_SpaceBackground, new Rectangle(0, 0, GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height), Color.White);
 
-        _spriteBatch.Draw(_Astronaut, _position, Color.White);
+        _spriteBatch.Draw(_Astronaut, _APosition, Color.White);
         _spriteBatch.Draw(_Astronaut2, new Vector2(100, 200), Color.White);
 
         _jupiterAnimation.Draw(_spriteBatch, new Vector2(500, 100), SpriteEffects.None);
+
+        _ufoAnimation.Draw(_spriteBatch, _UfoPosition, SpriteEffects.None);
 
         _spriteBatch.DrawString(_Arial, "Welcome to Space", new Vector2(230, 30), Color.Purple);
 
         _spriteBatch.End();
 
         base.Draw(gameTime);
+    }
+
+    private void HandleUfoMovement()
+    {
+        KeyboardState state = Keyboard.GetState();
+
+        if (state.IsKeyDown(Keys.W))
+        {
+            _UfoPosition.Y -= _UfoVelocity.Y * _ufoSpeed * deltaTime;
+            
+        }
+        if (state.IsKeyDown(Keys.S))
+        {
+            _UfoPosition.Y += _UfoVelocity.Y * _ufoSpeed * deltaTime;
+           
+        }
+        if (state.IsKeyDown(Keys.A))
+        {
+            _UfoPosition.X -= _UfoVelocity.X * _ufoSpeed * deltaTime;
+            
+        }
+        if (state.IsKeyDown(Keys.D))
+        {
+            _UfoPosition.X += _UfoVelocity.X * _ufoSpeed * deltaTime;
+
+        }
+            
     }
 
 }
